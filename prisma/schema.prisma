@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model reservations {
+  id               Int                @id @default(autoincrement())
+  restaurant_id    Int
+  table_id         Int
+  start_date       DateTime           @db.Timestamp(6)
+  end_date         DateTime           @db.Timestamp(6)
+  created_by       Int
+  restaurants      restaurants        @relation(fields: [restaurant_id], references: [id], onDelete: Cascade, map: "restaurantFK")
+  tables           tables             @relation(fields: [table_id], references: [id], onDelete: Cascade, map: "tableFK")
+  user_reservation user_reservation[]
+}
+
+model restaurant_tables {
+  restaurant_id Int
+  table_id      Int
+  restaurants   restaurants @relation(fields: [restaurant_id], references: [id], onDelete: Cascade, map: "RestaurantFK")
+  tables        tables      @relation(fields: [table_id], references: [id], onDelete: Cascade, map: "TableFK")
+
+  @@id([restaurant_id, table_id])
+}
+
+model restaurants {
+  id                  Int                 @id @default(autoincrement())
+  name                String              @db.VarChar(120)
+  open_time           DateTime            @default(dbgenerated("'00:00:00'::time without time zone")) @db.Time(6)
+  closing_time        DateTime            @default(dbgenerated("'24:00:00'::time without time zone")) @db.Time(6)
+  reservation_window  Int                 @default(0)
+  cancellation_window Int                 @default(0)
+  serves_vegan        Boolean             @default(false)
+  serves_vegetarian   Boolean             @default(false)
+  serves_paleo        Boolean             @default(false)
+  serves_gluten_free  Boolean             @default(false)
+  reservations        reservations[]
+  restaurant_tables   restaurant_tables[]
+}
+
+model tables {
+  id                Int                 @id @default(autoincrement())
+  size              Int
+  reservations      reservations[]
+  restaurant_tables restaurant_tables[]
+}
+
+model user_reservation {
+  user_id        Int
+  reservation_id Int
+  reservations   reservations @relation(fields: [reservation_id], references: [id], onDelete: Cascade, map: "reservationFK")
+  users          users        @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "userFK")
+
+  @@id([user_id, reservation_id])
+}
+
+model users {
+  id                   Int                @id @default(autoincrement())
+  email                String?            @db.VarChar(120)
+  phone                String?            @db.VarChar(12)
+  name                 String             @db.VarChar(32)
+  surname              String             @db.VarChar(32)
+  dietary_restrictions Json               @default("{}") @db.Json
+  user_reservation     user_reservation[]
+}

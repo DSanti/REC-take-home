@@ -1,9 +1,7 @@
 import logger from 'loglevel';
+import { Prisma, restaurants } from '@prisma/client';
 import { AvailableTable } from '../../../types/types';
-
-import { Prisma, PrismaClient, restaurants } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../../prismaClient';
 
 export const getAvailableTablesForSchedule = async (
     reservationStart: Date,

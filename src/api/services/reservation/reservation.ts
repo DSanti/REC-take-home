@@ -1,11 +1,8 @@
 import logger from 'loglevel';
-import { formatISO9075 } from 'date-fns';
 
-import { Prisma, PrismaClient, users } from '@prisma/client';
-import { UserReservation } from '../../../types/types';
-import { createDecipheriv } from 'crypto';
+import { users } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import prisma from '../../prismaClient';
 
 export const getReservationUsers = async (reservationId: number) => {
     const result = await prisma.user_reservation.findMany({

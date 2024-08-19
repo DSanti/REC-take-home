@@ -1,9 +1,7 @@
 import logger from 'loglevel';
 
-import { PrismaClient, restaurants } from '@prisma/client';
+import prisma from '../../prismaClient';
 import { DietaryRestrictions } from '../../../types/types';
-
-const prisma = new PrismaClient();
 
 export const getRestaurantsByDietaryRestrictions = async ({
     servesPaleo,

@@ -22,7 +22,7 @@ export const errorHandler = (error, req, res, next) => {
             });
         }
         case 'PrismaClientUnknownRequestError': {
-            if (error.message.includs('Error: Reservations cannot overlap.')) {
+            if (error.message.includes('Error: Reservations cannot overlap.')) {
                 return res.status(403).send({
                     message:
                         'The table selected has already been reserved by another user.',

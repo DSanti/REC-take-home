@@ -1,5 +1,3 @@
-import logger from 'loglevel';
-
 import prisma from '../../prismaClient';
 
 export const getUsersMultiId = async (

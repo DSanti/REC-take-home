@@ -1,8 +1,10 @@
 import express from 'express';
-import logger from 'loglevel';
 import { addHours } from 'date-fns';
+import { validate } from 'class-validator';
+import { plainToClass } from 'class-transformer';
 
 import { APIError } from '../../../classes/apiError';
+import { ScheduleQuery } from './dto/scheduleQuery.dto';
 import { getReservationByUsersAndTime } from './../../services/reservation/reservation';
 import { getUsersMultiId } from '../../services/user';
 import { getRestaurantsByDietaryRestrictions } from '../../services/restaurant';
@@ -13,14 +15,27 @@ export const schedulingRouter = express.Router();
 
 schedulingRouter.get('/', async (req, res, next) => {
     try {
-        const { users, reservationStart, aditionalSeats } = req.body;
+        const requestQueryParams = plainToClass(ScheduleQuery, req.query);
+        const validationErrors = await validate(requestQueryParams);
+        if (validationErrors.length > 0) {
+            throw new APIError(
+                'validation_error',
+                'Request query validation failed.',
+            );
+        }
 
-        const { userIds, emails, phoneNumbers } = users;
+        const {
+            userIds,
+            userEmails,
+            userPhoneNumbers,
+            reservationStart,
+            aditionalSeats,
+        } = requestQueryParams;
 
         const registeredUsers = await getUsersMultiId(
             userIds,
-            emails,
-            phoneNumbers,
+            userEmails,
+            userPhoneNumbers,
         );
 
         const reservationStartDate = new Date(reservationStart);
@@ -42,8 +57,8 @@ schedulingRouter.get('/', async (req, res, next) => {
 
         const totalSeating =
             userIds.length +
-            emails.length +
-            phoneNumbers.length +
+            userEmails.length +
+            userPhoneNumbers.length +
             aditionalSeats;
 
         const filteredRestaurants = await getRestaurantsByDietaryRestrictions(

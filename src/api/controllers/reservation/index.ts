@@ -1,6 +1,7 @@
 import express from 'express';
-import logger from 'loglevel';
 import { addHours } from 'date-fns';
+import { validate } from 'class-validator';
+import { plainToClass } from 'class-transformer';
 import { getUsersByIds } from '../../services/user';
 import {
     createReservation,
@@ -9,11 +10,23 @@ import {
     getReservation,
 } from '../../services/reservation/reservation';
 import { APIError } from '../../../classes/apiError';
+import { CreateReservationDTO } from './dto/createReservation.dto';
+import { DeleteReservationDTO } from './dto/deleteReservation.dto';
 
 export const reservationRouter = express.Router();
 
 reservationRouter.post('/', async (req, res, next) => {
     try {
+        const validationErrors = await validate(
+            plainToClass(CreateReservationDTO, req.body),
+        );
+        if (validationErrors.length > 0) {
+            throw new APIError(
+                'validation_error',
+                'Request validation failed.',
+            );
+        }
+
         const { userIds, reservationStart, createdBy, tableId, restaurantId } =
             req.body;
 
@@ -54,6 +67,16 @@ reservationRouter.post('/', async (req, res, next) => {
 
 reservationRouter.delete('/', async (req, res, next) => {
     try {
+        const validationErrors = await validate(
+            plainToClass(DeleteReservationDTO, req.body),
+        );
+        if (validationErrors.length > 0) {
+            throw new APIError(
+                'validation_error',
+                'Request validation failed.',
+            );
+        }
+
         const { reservationId, deletedBy } = req.body;
 
         const reservation = await getReservation(reservationId);

@@ -6,6 +6,11 @@ export const createReservationRequest = {
     restaurantId: 1,
 };
 
+export const createReservationBadRequest = {
+    userIds: [1],
+    reservationStart: '2024-08-11T10:10:00.000Z',
+};
+
 export const createReservationUnrelatedRequest = {
     userIds: [1],
     reservationStart: '2024-08-11T10:10:00.000Z',
@@ -43,6 +48,10 @@ export const createReservationUnrelatedResponse = {
     message: 'User must be part of a reservation to create it.',
 };
 
+export const reservationBadRequestResponse = {
+    message: 'Request validation failed.',
+};
+
 export const createReservationDoubleBookingResponse = {
     message: 'The table selected has already been reserved by another user.',
 };
@@ -53,6 +62,11 @@ export const createReservationUnregisteredResponse = {
 
 export const deleteReservationRequest = {
     reservationId: 1,
+    deletedBy: 1,
+};
+
+export const deleteReservationBadRequestRequest = {
+    reservationId: 'testId',
     deletedBy: 1,
 };
 

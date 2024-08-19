@@ -1,8 +1,8 @@
-import { Logger } from 'loglevel';
+import logger from 'loglevel';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler = (error, req, res, next) => {
-    // Logging the error here
-    console.log(error);
+    logger.error(error);
 
     switch (error.name) {
         case 'reservation_not_found': {
@@ -18,6 +18,11 @@ export const errorHandler = (error, req, res, next) => {
         }
         case 'unknown_user': {
             return res.status(401).send({
+                message: error.message,
+            });
+        }
+        case 'validation_error': {
+            return res.status(400).send({
                 message: error.message,
             });
         }

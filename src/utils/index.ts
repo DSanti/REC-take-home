@@ -1,5 +1,5 @@
-import { users } from '@prisma/client';
-import { Prisma } from '@prisma/client';
+import { users } from '@prisma/client/edge';
+import { Prisma } from '@prisma/client/edge';
 
 export const summarizeDietaryRestrictions = (users: users[]) => {
     const summarizedRestrictions = {

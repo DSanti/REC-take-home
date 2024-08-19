@@ -1,5 +1,3 @@
-import logger from 'loglevel';
-
 import { users } from '@prisma/client';
 
 import prisma from '../../prismaClient';

@@ -1,4 +1,3 @@
-import logger from 'loglevel';
 import { Prisma, restaurants } from '@prisma/client';
 import { AvailableTable } from '../../../types/types';
 import prisma from '../../prismaClient';

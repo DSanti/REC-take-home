@@ -10,6 +10,8 @@
         "outDir": "./dist",
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
     }
 }

@@ -34,14 +34,20 @@ export const reservation = {
     created_by: 1,
 };
 
-export const getScheduleRequest = {
-    users: {
-        userIds: [1],
-        emails: [],
-        phoneNumbers: [],
-    },
+export const getScheduleQuery = {
+    userIds: '1',
+    userEmails: '',
+    userPhoneNumbers: '',
     reservationStart: '2024-08-11T10:10:00.000Z',
-    aditionalSeats: 1,
+    aditionalSeats: '1',
+};
+
+export const getScheduleQueryBadRequest = {
+    userIds: '1',
+    userEmails: 'testMail.com',
+    userPhoneNumbers: '',
+    reservationStart: '2024-08-11T10:10:00.000Z',
+    aditionalSeats: '1',
 };
 
 export const availableTable = {
@@ -59,4 +65,8 @@ export const availableTable = {
 
 export const scheduleDoubleBookedResponse = {
     message: 'One or more users already have reservations at this time.',
+};
+
+export const scheduleBadRequestResponse = {
+    message: 'Request query validation failed.',
 };

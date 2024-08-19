@@ -5,7 +5,7 @@ import { prismaMock } from '../../../testUtils/singleton';
 import * as mocks from './mocks';
 
 describe('Schedule controller tests', () => {
-    describe('Reservation creation', () => {
+    describe('Get available tables', () => {
         afterEach(() => {
             jest.clearAllMocks();
         });
@@ -24,7 +24,7 @@ describe('Schedule controller tests', () => {
 
             const res = await request(server)
                 .get('/api/schedule')
-                .send(mocks.getScheduleRequest);
+                .query(mocks.getScheduleQuery);
 
             expect(res.statusCode).toBe(200);
             expect(res.body).toEqual([mocks.availableTable]);
@@ -38,10 +38,23 @@ describe('Schedule controller tests', () => {
 
             const res = await request(server)
                 .get('/api/schedule')
-                .send(mocks.getScheduleRequest);
+                .query(mocks.getScheduleQuery);
 
             expect(res.statusCode).toBe(403);
             expect(res.body).toEqual(mocks.scheduleDoubleBookedResponse);
+        });
+        it('Should fail to retrieve available tables, bad request.', async () => {
+            prismaMock.users.findMany.mockResolvedValue([mocks.user]);
+            prismaMock.reservations.findMany.mockResolvedValue([
+                mocks.reservation,
+            ]);
+
+            const res = await request(server)
+                .get('/api/schedule')
+                .query(mocks.getScheduleQueryBadRequest);
+
+            expect(res.statusCode).toBe(400);
+            expect(res.body).toEqual(mocks.scheduleBadRequestResponse);
         });
     });
 });

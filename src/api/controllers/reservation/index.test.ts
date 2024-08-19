@@ -53,6 +53,14 @@ describe('Reservation controller tests', () => {
             expect(res.statusCode).toBe(403);
             expect(res.body).toEqual(mocks.createReservationUnrelatedResponse);
         });
+        it('Should fail to create reservation, bad request', async () => {
+            const res = await request(server)
+                .post('/api/reservations')
+                .send(mocks.createReservationBadRequest);
+
+            expect(res.statusCode).toBe(400);
+            expect(res.body).toEqual(mocks.reservationBadRequestResponse);
+        });
         it('Should fail to create reservation, author of the reservation is not registered', async () => {
             prismaMock.users.findMany.mockResolvedValue([]);
 
@@ -124,6 +132,14 @@ describe('Reservation controller tests', () => {
 
             expect(res.statusCode).toBe(404);
             expect(res.body).toEqual(mocks.deleteReservationNotFoundResponse);
+        });
+        it('Should fail to delete reservation, bad request', async () => {
+            const res = await request(server)
+                .delete('/api/reservations')
+                .send(mocks.deleteReservationBadRequestRequest);
+
+            expect(res.statusCode).toBe(400);
+            expect(res.body).toEqual(mocks.reservationBadRequestResponse);
         });
     });
 });

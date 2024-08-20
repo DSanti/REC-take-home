@@ -41,7 +41,7 @@ describe('Schedule controller tests', () => {
                 .query(mocks.getScheduleQuery);
 
             expect(res.statusCode).toBe(403);
-            expect(res.body).toEqual(mocks.scheduleDoubleBookedResponse);
+            expect(res.body).toMatchObject(mocks.scheduleDoubleBookedResponse);
         });
         it('Should fail to retrieve available tables, bad request.', async () => {
             prismaMock.users.findMany.mockResolvedValue([mocks.user]);
@@ -54,7 +54,7 @@ describe('Schedule controller tests', () => {
                 .query(mocks.getScheduleQueryBadRequest);
 
             expect(res.statusCode).toBe(400);
-            expect(res.body).toEqual(mocks.scheduleBadRequestResponse);
+            expect(res.body).toMatchObject(mocks.scheduleBadRequestResponse);
         });
     });
 });

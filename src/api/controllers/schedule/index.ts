@@ -29,7 +29,7 @@ schedulingRouter.get('/', async (req, res, next) => {
             userEmails,
             userPhoneNumbers,
             reservationStart,
-            aditionalSeats,
+            additionalSeats,
         } = requestQueryParams;
 
         const registeredUsers = await getUsersMultiId(
@@ -59,7 +59,7 @@ schedulingRouter.get('/', async (req, res, next) => {
             userIds.length +
             userEmails.length +
             userPhoneNumbers.length +
-            aditionalSeats;
+            additionalSeats;
 
         const filteredRestaurants = await getRestaurantsByDietaryRestrictions(
             summarizeDietaryRestrictions(registeredUsers),

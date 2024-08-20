@@ -39,7 +39,7 @@ export const getScheduleQuery = {
     userEmails: '',
     userPhoneNumbers: '',
     reservationStart: '2024-08-11T10:10:00.000Z',
-    aditionalSeats: '1',
+    additionalSeats: '1',
 };
 
 export const getScheduleQueryBadRequest = {
@@ -47,7 +47,7 @@ export const getScheduleQueryBadRequest = {
     userEmails: 'testMail.com',
     userPhoneNumbers: '',
     reservationStart: '2024-08-11T10:10:00.000Z',
-    aditionalSeats: '1',
+    additionalSeats: '1',
 };
 
 export const availableTable = {

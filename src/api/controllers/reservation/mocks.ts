@@ -61,12 +61,6 @@ export const createReservationUnregisteredResponse = {
 };
 
 export const deleteReservationRequest = {
-    reservationId: 1,
-    deletedBy: 1,
-};
-
-export const deleteReservationBadRequestRequest = {
-    reservationId: 'testId',
     deletedBy: 1,
 };
 
@@ -85,7 +79,7 @@ export const deleteReservationUsersUnrelated = [
 ];
 
 export const deleteReservationResponse = {
-    message: 'Reservation 1 deleted successfully.',
+    message: 'Reservation with id 1 was deleted successfully.',
 };
 
 export const deleteReservationUnrelatedResponse = {

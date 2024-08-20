@@ -7,10 +7,6 @@ import * as mocks from './mocks';
 
 describe('Reservation controller tests', () => {
     describe('Reservation creation', () => {
-        afterEach(() => {
-            jest.clearAllMocks();
-        });
-
         afterAll(() => {
             server.close();
         });
@@ -41,7 +37,7 @@ describe('Reservation controller tests', () => {
                 .send(mocks.createReservationRequest);
 
             expect(res.statusCode).toBe(403);
-            expect(res.body).toEqual(
+            expect(res.body).toMatchObject(
                 mocks.createReservationDoubleBookingResponse,
             );
         });
@@ -51,7 +47,9 @@ describe('Reservation controller tests', () => {
                 .send(mocks.createReservationUnrelatedRequest);
 
             expect(res.statusCode).toBe(403);
-            expect(res.body).toEqual(mocks.createReservationUnrelatedResponse);
+            expect(res.body).toMatchObject(
+                mocks.createReservationUnrelatedResponse,
+            );
         });
         it('Should fail to create reservation, bad request', async () => {
             const res = await request(server)
@@ -59,7 +57,7 @@ describe('Reservation controller tests', () => {
                 .send(mocks.createReservationBadRequest);
 
             expect(res.statusCode).toBe(400);
-            expect(res.body).toEqual(mocks.reservationBadRequestResponse);
+            expect(res.body).toMatchObject(mocks.reservationBadRequestResponse);
         });
         it('Should fail to create reservation, author of the reservation is not registered', async () => {
             prismaMock.users.findMany.mockResolvedValue([]);
@@ -69,7 +67,7 @@ describe('Reservation controller tests', () => {
                 .send(mocks.createReservationRequest);
 
             expect(res.statusCode).toBe(401);
-            expect(res.body).toEqual(
+            expect(res.body).toMatchObject(
                 mocks.createReservationUnregisteredResponse,
             );
         });
@@ -86,7 +84,7 @@ describe('Reservation controller tests', () => {
             prismaMock.reservations.delete.mockResolvedValue(mocks.reservation);
 
             const res = await request(server)
-                .delete('/api/reservations')
+                .delete('/api/reservations/1')
                 .send(mocks.deleteReservationRequest);
 
             expect(res.statusCode).toBe(200);
@@ -102,11 +100,13 @@ describe('Reservation controller tests', () => {
             );
 
             const res = await request(server)
-                .delete('/api/reservations')
+                .delete('/api/reservations/1')
                 .send(mocks.deleteReservationRequest);
 
             expect(res.statusCode).toBe(403);
-            expect(res.body).toEqual(mocks.deleteReservationUnrelatedResponse);
+            expect(res.body).toMatchObject(
+                mocks.deleteReservationUnrelatedResponse,
+            );
         });
         it('Should fail to delete reservation, user requesting deletion is not registered', async () => {
             prismaMock.users.findMany.mockResolvedValue([]);
@@ -115,11 +115,11 @@ describe('Reservation controller tests', () => {
             );
 
             const res = await request(server)
-                .delete('/api/reservations')
+                .delete('/api/reservations/1')
                 .send(mocks.deleteReservationRequest);
 
             expect(res.statusCode).toBe(401);
-            expect(res.body).toEqual(
+            expect(res.body).toMatchObject(
                 mocks.deleteReservationUnregisteredResponse,
             );
         });
@@ -127,19 +127,21 @@ describe('Reservation controller tests', () => {
             prismaMock.reservations.findUnique.mockResolvedValue(null);
 
             const res = await request(server)
-                .delete('/api/reservations')
+                .delete('/api/reservations/1')
                 .send(mocks.deleteReservationRequest);
 
             expect(res.statusCode).toBe(404);
-            expect(res.body).toEqual(mocks.deleteReservationNotFoundResponse);
+            expect(res.body).toMatchObject(
+                mocks.deleteReservationNotFoundResponse,
+            );
         });
         it('Should fail to delete reservation, bad request', async () => {
             const res = await request(server)
-                .delete('/api/reservations')
-                .send(mocks.deleteReservationBadRequestRequest);
+                .delete('/api/reservations/1')
+                .send({});
 
             expect(res.statusCode).toBe(400);
-            expect(res.body).toEqual(mocks.reservationBadRequestResponse);
+            expect(res.body).toMatchObject(mocks.reservationBadRequestResponse);
         });
     });
 });

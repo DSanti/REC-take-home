@@ -17,7 +17,7 @@ export class ScheduleQuery {
     @IsInt()
     @Min(0)
     @Type(() => Number)
-    aditionalSeats: number;
+    additionalSeats: number;
 
     @IsArray()
     @IsNumber({}, { each: true })

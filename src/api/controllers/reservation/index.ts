@@ -65,7 +65,7 @@ reservationRouter.post('/', async (req, res, next) => {
     }
 });
 
-reservationRouter.delete('/', async (req, res, next) => {
+reservationRouter.delete('/:reservationId', async (req, res, next) => {
     try {
         const validationErrors = await validate(
             plainToClass(DeleteReservationDTO, req.body),
@@ -77,7 +77,8 @@ reservationRouter.delete('/', async (req, res, next) => {
             );
         }
 
-        const { reservationId, deletedBy } = req.body;
+        const { deletedBy } = req.body;
+        const reservationId = parseInt(req.params.reservationId);
 
         const reservation = await getReservation(reservationId);
 
@@ -109,7 +110,7 @@ reservationRouter.delete('/', async (req, res, next) => {
         await deleteReservation(reservationId);
 
         res.status(200).send({
-            message: `Reservation ${reservationId} deleted successfully.`,
+            message: `Reservation with id ${reservationId} was deleted successfully.`,
         });
     } catch (err) {
         return next(err);

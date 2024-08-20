@@ -2,42 +2,43 @@ import logger from 'loglevel';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler = (error, req, res, next) => {
-    logger.error(error);
+    if (process.env.NODE_ENV !== 'test') {
+        logger.error(`Error: ${error.name} -- ${error.message}`);
+    }
 
     switch (error.name) {
         case 'reservation_not_found': {
-            return res.status(404).send({
-                message: error.message,
-            });
+            res.status(404);
+            break;
         }
         case 'unrelated_user':
         case 'user_double_booked': {
-            return res.status(403).send({
-                message: error.message,
-            });
+            res.status(403);
+            break;
         }
         case 'unknown_user': {
-            return res.status(401).send({
-                message: error.message,
-            });
+            res.status(401);
+            break;
         }
         case 'validation_error': {
-            return res.status(400).send({
-                message: error.message,
-            });
+            res.status(400);
+            break;
         }
         case 'PrismaClientUnknownRequestError': {
             if (error.message.includes('Error: Reservations cannot overlap.')) {
-                return res.status(403).send({
-                    message:
-                        'The table selected has already been reserved by another user.',
-                });
+                res.status(403);
+                error.message =
+                    'The table selected has already been reserved by another user.';
+                break;
             }
         }
         default: {
-            return res.status(500).send({
-                message: error.message,
-            });
+            res.status(500);
         }
     }
+    res.json({
+        message: error.message,
+        // 'stack' only used on dev enviroment
+        ...(process.env.NODE_ENV === 'prod' ? null : { stack: error.stack }),
+    });
 };

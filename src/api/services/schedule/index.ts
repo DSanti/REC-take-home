@@ -36,5 +36,7 @@ export const getAvailableTablesForSchedule = async (
 	AND res.id IS NULL
     ORDER BY empty_seats;`;
 
+    results.forEach((r) => delete r.reservation_id);
+
     return results;
 };

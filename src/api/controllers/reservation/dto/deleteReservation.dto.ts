@@ -6,9 +6,4 @@ export class DeleteReservationDTO {
     @Min(1)
     @Type(() => Number)
     deletedBy: number;
-
-    @IsInt()
-    @Min(1)
-    @Type(() => Number)
-    reservationId: number;
 }

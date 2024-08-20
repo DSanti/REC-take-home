@@ -21,5 +21,5 @@ export type AvailableTable = {
     serves_gluten_free: boolean;
     size: number;
     empty_seats: number;
-    reservation_id: number;
+    reservation_id?: number;
 };

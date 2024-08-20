@@ -55,6 +55,8 @@ npm run start:prod
 
 The data model built for the app was designed to facilitate the querying of available tables for a given time of day and group of people. This was identified as the most "expensive" query for the database, and the one that would be executed the most if there were many users concurrently trying to find an available table to book. The second most-called query would be the one that checks if a user already has a reservation for the given reservation time while trying to retrieve available tables to book.
 
+![](./UML%20ER%20diagram.png)
+
 As the diagram shows, most entities have a table to store their data, and there are two tables that store information on the 1..n relationship between reservations and users, and restaurants and tables.
 
 ### Usage
@@ -123,7 +125,7 @@ The schedule endpoint only allows for one operation, `GET`, which will retrieve 
     Every query parameter is required, even if empty.
 
     An example of a request would be `/api/schedule?userIds=4,5&userEmails=firstEmail%40gmail.com&userPhoneNumbers=%2B555982285&reservationStart=2024-08-11T06%3A10%3A00.000Z&additionalSeats=4`
-    
+
     The endpoint will respond with a list of available tables to be booked that match the number of users attending the reservation and their dietary restrictions. The response also has information about the restaurant where the table is located, size of the table and it's remaining empty seats. The list of tables is ordered by this field, so as to prioritize the tables that fit the group's size better first, and the ones that require under-seating further down the list.
 
 ### Testing
@@ -140,14 +142,14 @@ This will execute every test found on the project's directory and display a cove
 
 When designing the system, several key considerations were taken into account to ensure the solution would meet every requirement and use case presented in the challenge and its FAQ. These include:
 
-- The schedule service allows for under seating, ordering the available tables by empty seats to prioritize the ones that fit the group better.
-- While searching for available tables, both emails and phone numbers are accepted, and the application will try to identify registered users using them. In this way, the frontend would allow users to consider their friends' dietary restrictions even if their ``userIds`` are not known to the frontend client at the time.
-- The ``additionalSeats`` parameter allows users to book tables taking into account unregistered users attending the reservation
-- Before trying to find a table for a group, the Schedule API will check if any user in the group has a reservation that would overlap with the one being searched for. Because this is checked before searching for available tables, the error can be sent to the frontend before the user tries to create a reservation, instead of failing to create a reservation after the user has already seen the tables availability, improving the using experience.
-- While the application does not currently support anticipation time restrictions to create a reservation or search for a table, or a cancellation time window for deleting a reservation, the database already has columns to store that information in a per-restaurant basis.
-  - In the same vein, the database has columns to store opening and closing hours on a per-restaurant basis to support the development of the feature down the line.
-- Because users would search for available tables, and then create a reservation for one, a user could try to book a table that has been booked since he last searched for tables. To solve this, a trigger was configured on the ``reservations`` table that checks before a new row is added. If the new reservation would overlap with any other reservation already stored, it will raise an exception and block the transaction. This ensures that the first reservation creation request wins, and that there cannot be overlapping reservations in the database.
-- In the case of reservation deletion, the user making the request must be part of the reservation to begin with. This is one of the scenarios in the FAQ, where any attendee has permission to delete or cancel a reservation that they are part of.
+-   The schedule service allows for under seating, ordering the available tables by empty seats to prioritize the ones that fit the group better.
+-   While searching for available tables, both emails and phone numbers are accepted, and the application will try to identify registered users using them. In this way, the frontend would allow users to consider their friends' dietary restrictions even if their `userIds` are not known to the frontend client at the time.
+-   The `additionalSeats` parameter allows users to book tables taking into account unregistered users attending the reservation
+-   Before trying to find a table for a group, the Schedule API will check if any user in the group has a reservation that would overlap with the one being searched for. Because this is checked before searching for available tables, the error can be sent to the frontend before the user tries to create a reservation, instead of failing to create a reservation after the user has already seen the tables availability, improving the using experience.
+-   While the application does not currently support anticipation time restrictions to create a reservation or search for a table, or a cancellation time window for deleting a reservation, the database already has columns to store that information in a per-restaurant basis.
+    -   In the same vein, the database has columns to store opening and closing hours on a per-restaurant basis to support the development of the feature down the line.
+-   Because users would search for available tables, and then create a reservation for one, a user could try to book a table that has been booked since he last searched for tables. To solve this, a trigger was configured on the `reservations` table that checks before a new row is added. If the new reservation would overlap with any other reservation already stored, it will raise an exception and block the transaction. This ensures that the first reservation creation request wins, and that there cannot be overlapping reservations in the database.
+-   In the case of reservation deletion, the user making the request must be part of the reservation to begin with. This is one of the scenarios in the FAQ, where any attendee has permission to delete or cancel a reservation that they are part of.
 
 ### Further improvements
 
@@ -155,9 +157,9 @@ As the take home challenge has a defined scope and period of time to be complete
 
 Some of them are:
 
-- Integration tests using docker to create test environment and database.
-- Further refinement of error messages, both for diagnosing problems while debugging and to serve the frontend better responses if their requests fail.
-- Implementation of opening and closing hours as restrictions to search and create reservations.
-- Implementation of minimum advance notice time to create reservations, and cancellation time window for deleting them.
-- Database logs.
-- Logical deletion for reservations, to maintain records of all created reservations.
+-   Integration tests using docker to create test environment and database.
+-   Further refinement of error messages, both for diagnosing problems while debugging and to serve the frontend better responses if their requests fail.
+-   Implementation of opening and closing hours as restrictions to search and create reservations.
+-   Implementation of minimum advance notice time to create reservations, and cancellation time window for deleting them.
+-   Database logs.
+-   Logical deletion for reservations, to maintain records of all created reservations ever.
